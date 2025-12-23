@@ -15,7 +15,15 @@ Keep the implementation minimal.
 """
 
 # TODO: Fill this in!
-YOUR_REFLEXION_PROMPT = ""
+YOUR_REFLEXION_PROMPT = """You are an expert Python debugger.
+You will be provided with a function implementation and a list of test failures.
+Your task is to rewrite the function so that it fixes all the listed bugs.
+
+Rules:
+1. Analyze the failure reasons carefully (e.g., missing special characters, length requirements).
+2. Output ONLY the corrected Python function in a single code block.
+3. Do not include any explanations or extra text.
+"""
 
 
 # Ground-truth test suite used to evaluate generated code
@@ -96,7 +104,19 @@ def your_build_reflexion_context(prev_code: str, failures: List[str]) -> str:
 
     Return a string that will be sent as the user content alongside the reflexion system prompt.
     """
-    return ""
+    failure_list = "\n".join(f"- {f}" for f in failures)
+    return f"""The previous implementation failed some tests.
+
+Previous Code:
+```python
+{prev_code}
+```
+
+Test Failures:
+{failure_list}
+
+Please fix the code to pass all tests.
+"""
 
 
 def apply_reflexion(

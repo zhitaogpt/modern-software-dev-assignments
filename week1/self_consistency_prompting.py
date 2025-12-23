@@ -9,7 +9,31 @@ load_dotenv()
 NUM_RUNS_TIMES = 5
 
 # TODO: Fill this in! Try to get as close to 100% correctness across all runs as possible.
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """You are a precise math solver. Solve the problem using the direct subtraction method for distance problems.
+
+Formula:
+Distance Between Stops = Total Distance - Distance of First Stop - Distance of Second Stop from End
+
+Example 1:
+Problem: Alice ran a 10km race. She stopped for water after 3km. She stopped again 2km before the finish line. How far did she run between stops?
+Reasoning:
+1. Total Distance = 10
+2. First Stop = 3
+3. Second Stop from End = 2
+4. Calculation: 10 - 3 - 2 = 5
+Answer: 5
+
+Example 2:
+Problem: A train travels 100 miles. It stops at mile 30. Then it stops again 10 miles from the destination. What is the distance between the two stops?
+Reasoning:
+1. Total Distance = 100
+2. First Stop = 30
+3. Second Stop from End = 10
+4. Calculation: 100 - 30 - 10 = 60
+Answer: 60
+
+Now solve the user's problem using this exact logic.
+"""
 
 USER_PROMPT = """
 Solve this problem, then give the final answer on the last line as "Answer: <number>".

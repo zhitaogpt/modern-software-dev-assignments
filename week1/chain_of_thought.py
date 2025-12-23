@@ -8,7 +8,19 @@ load_dotenv()
 NUM_RUNS_TIMES = 5
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """You are a smart math assistant. Solve the user's problem step-by-step.
+
+Strategy:
+1. Since we need to calculate 3^12345 (mod 100), finding the full value is impossible.
+2. Instead, look for a pattern in the powers of 3 modulo 100.
+3. Calculate 3^1, 3^2, 3^3, ... (mod 100) until you find a cycle or a power that equals 1 (mod 100).
+4. Once you find the cycle length (let's call it P where 3^P = 1 mod 100), simplify the exponent: 12345 mod P.
+5. Calculate the final remainder.
+
+Format:
+Reasoning: [Your step-by-step derivation]
+Answer: [Final number]
+"""
 
 
 USER_PROMPT = """

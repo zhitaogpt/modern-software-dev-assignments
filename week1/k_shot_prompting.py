@@ -7,7 +7,33 @@ load_dotenv()
 NUM_RUNS_TIMES = 5
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """You are a high-performance string reversal tool. You reverse every input string character-by-character.
+
+Rules:
+1. Output ONLY the reversed string.
+2. No explanation, no extra text.
+lets think step by step.
+
+Example 1:
+Input: cat
+Output: tac
+
+Example 2:
+Input: apple
+Output: elppa
+
+Example 3:
+Input: abcde
+Output: edcba
+
+Example 4:
+Input: computer
+Output: retupmoc
+
+Example 5:
+Input: software
+Output: erawtfos
+"""
 
 USER_PROMPT = """
 Reverse the order of letters in the following word. Only output the reversed word, no other text:
