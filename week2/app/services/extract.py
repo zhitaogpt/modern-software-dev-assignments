@@ -6,6 +6,7 @@ from typing import List
 import json
 from typing import Any
 from ollama import chat
+from pydantic import BaseModel
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -16,6 +17,38 @@ KEYWORD_PREFIXES = (
     "action:",
     "next:",
 )
+
+
+class ActionItemsResponse(BaseModel):
+    items: List[str]
+
+
+def extract_action_items_llm(text: str) -> List[str]:
+    """
+    Extracts action items from text using a Large Language Model (Ollama).
+    """
+    prompt = f"""
+    Analyze the following text and extract a list of actionable tasks, to-dos, or action items.
+    Return the result strictly as a JSON object with a single key 'items' containing a list of strings.
+    If no action items are found, return an empty list.
+
+    Text to analyze:
+    {text}
+    """
+
+    try:
+        response = chat(
+            model='llama3.1:8b',
+            messages=[{'role': 'user', 'content': prompt}],
+            format=ActionItemsResponse.model_json_schema(),
+        )
+        
+        # Validate and parse the response
+        result = ActionItemsResponse.model_validate_json(response.message.content)
+        return result.items
+    except Exception as e:
+        print(f"Error calling LLM: {e}")
+        return []
 
 
 def _is_action_line(line: str) -> bool:
