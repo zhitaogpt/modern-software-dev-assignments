@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "hn-mcp-server"
+version = "0.1.0"
+description = "MCP server for summarizing Hacker News trends"
+authors = ["Student"]
+readme = "README.md"
+packages = []
+package-mode = false
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+mcp = ">=1.2.0"
+httpx = ">=0.27.0"
+rank-bm25 = ">=0.2.2"
+
+[build-system]
+requires = ["poetry-core>=1.7.0"]
+build-backend = "poetry.core.masonry.api"
