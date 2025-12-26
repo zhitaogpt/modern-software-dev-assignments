@@ -12,6 +12,9 @@
 
       <section>
         <h2>Notes</h2>
+        <div class="search-container">
+          <input type="text" id="note-search" placeholder="Search notes..." />
+        </div>
         <form id="note-form">
           <input id="note-title" placeholder="Title" required />
           <input id="note-content" placeholder="Content" required />
@@ -22,6 +25,12 @@
 
       <section>
         <h2>Action Items</h2>
+        <div class="filter-container">
+          <button onclick="loadActions()">All</button>
+          <button onclick="loadActions(false)">Pending</button>
+          <button onclick="loadActions(true)">Completed</button>
+          <button id="bulk-complete-btn">Complete All Visible</button>
+        </div>
         <form id="action-form">
           <input id="action-desc" placeholder="Description" required />
           <button type="submit">Add</button>
