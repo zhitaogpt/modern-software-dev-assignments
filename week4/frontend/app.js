@@ -4,10 +4,11 @@ async function fetchJSON(url, options) {
   return res.json();
 }
 
-async function loadNotes() {
+async function loadNotes(query = null) {
   const list = document.getElementById('notes');
   list.innerHTML = '';
-  const notes = await fetchJSON('/notes/');
+  const url = query ? `/notes/search/?q=${encodeURIComponent(query)}` : '/notes/';
+  const notes = await fetchJSON(url);
   for (const n of notes) {
     const li = document.createElement('li');
     li.textContent = `${n.title}: ${n.content}`;
@@ -63,4 +64,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
   loadNotes();
   loadActions();
+
+  document.getElementById('search-btn').addEventListener('click', () => {
+    const q = document.getElementById('search-query').value;
+    loadNotes(q);
+  });
+
+  document.getElementById('clear-search-btn').addEventListener('click', () => {
+    document.getElementById('search-query').value = '';
+    loadNotes();
+  });
 });
