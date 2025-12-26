@@ -1,13 +1,26 @@
 async function fetchJSON(url, options) {
   const res = await fetch(url, options);
   if (!res.ok) throw new Error(await res.text());
-  return res.json();
+  const json = await res.json();
+  if (json.ok === false) {
+    throw new Error(json.error ? json.error.message : 'Unknown error');
+  }
+  return json.data; // Unwrap the envelope
 }
 
-async function loadNotes() {
+async function loadNotes(query = '') {
   const list = document.getElementById('notes');
   list.innerHTML = '';
-  const notes = await fetchJSON('/notes/');
+  
+  let url = '/notes/';
+  if (query) {
+    url = `/notes/?q=${encodeURIComponent(query)}`;
+  }
+  
+  const response = await fetchJSON(url);
+  // Now response is PaginatedResponse object (items, total, etc.)
+  const notes = response.items;
+  
   for (const n of notes) {
     const li = document.createElement('li');
     li.textContent = `${n.title}: ${n.content}`;
@@ -15,10 +28,22 @@ async function loadNotes() {
   }
 }
 
-async function loadActions() {
+let currentActionItems = [];
+
+async function loadActions(completed = null) {
   const list = document.getElementById('actions');
   list.innerHTML = '';
-  const items = await fetchJSON('/action-items/');
+  
+  let url = '/action-items/';
+  if (completed !== null) {
+    url += `?completed=${completed}`;
+  }
+  
+  const response = await fetchJSON(url);
+  // Response is PaginatedResponse
+  const items = response.items;
+  currentActionItems = items;
+
   for (const a of items) {
     const li = document.createElement('li');
     li.textContent = `${a.description} [${a.completed ? 'done' : 'open'}]`;
@@ -27,13 +52,37 @@ async function loadActions() {
       btn.textContent = 'Complete';
       btn.onclick = async () => {
         await fetchJSON(`/action-items/${a.id}/complete`, { method: 'PUT' });
-        loadActions();
+        loadActions(completed);
       };
       li.appendChild(btn);
     }
     list.appendChild(li);
   }
 }
+
+// Bulk complete handler
+document.addEventListener('DOMContentLoaded', () => {
+  const bulkBtn = document.getElementById('bulk-complete-btn');
+  if (bulkBtn) {
+    bulkBtn.addEventListener('click', async () => {
+      const pendingIds = currentActionItems
+        .filter(item => !item.completed)
+        .map(item => item.id);
+      
+      if (pendingIds.length === 0) return;
+
+      await fetchJSON('/action-items/bulk-complete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ item_ids: pendingIds }),
+      });
+      // Reload current view
+      // Determine current filter from UI state is hard without saving it, 
+      // but simplistic reload works:
+      loadActions(); 
+    });
+  }
+});
 
 window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('note-form').addEventListener('submit', async (e) => {
@@ -59,6 +108,10 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     e.target.reset();
     loadActions();
+  });
+
+  document.getElementById('note-search').addEventListener('input', (e) => {
+    loadNotes(e.target.value);
   });
 
   loadNotes();
