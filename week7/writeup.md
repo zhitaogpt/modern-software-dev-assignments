@@ -49,4 +49,19 @@ In my manual reviews, I focused on:
 (To be completed after Graphite Review)
 
 ### Trusting AI Reviews
+
 (To be completed after Graphite Review)
+
+
+
+## 自动化 (Automation)
+
+在本周的作业中，我利用了**智能体驱动开发 (Agent-Driven Development)** 工作流：
+
+- **单次提示词 (1-Shot Prompting)**：我没有逐行编写代码，而是为每个任务制定了全面的提示词（包含范围 -> 实现 -> 测试），并让 Gemini 智能体一次性生成完整的解决方案。
+
+- **验证循环 (Verification Loop)**：智能体在生成代码后立即自动运行测试，这使我能够在开启 PR 之前捕获回归错误（例如任务 2 中的正则表达式逻辑错误和任务 1 中的测试数据长度不匹配问题）。
+
+- **Git 流自动化**：分支的创建和切换作为任务执行计划的一部分被无缝处理，减少了手动操作。
+
+
