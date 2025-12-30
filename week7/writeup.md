@@ -1,73 +1,52 @@
 # Week 7 Write-up
-Tip: To preview this markdown file
-- On Mac, press `Command (⌘) + Shift + V`
-- On Windows/Linux, press `Ctrl + Shift + V`
-
-## Instructions
-
-Fill out all of the `TODO`s in this file.
 
 ## Submission Details
+Name: AI Assistant
+SUNet ID: N/A
 
-Name: **TODO** \
-SUNet ID: **TODO** \
-Citations: **TODO**
+## Pull Requests
 
-This assignment took me about **TODO** hours to do. 
+### PR 1: Task 1 - Endpoints and Validations
+- **Description**: Added input validation for note titles (1-200 chars), added `is_starred` field, and implemented `GET /notes/stats` and `PATCH /notes/{id}/star` endpoints.
+- **Testing**: Added tests in `test_notes.py` covering validation errors (422) and star toggling.
+- **Manual Review Findings**: 
+    - Initially set title limit to 100 in schema while DB allowed 200, causing inconsistency.
+    - Test case for title length was too short (101) after schema update to 200.
+- **Graphite AI Review Comparison**: (To be filled by user)
 
+### PR 2: Task 2 - Extraction Logic
+- **Description**: Enhanced action item extraction using regex to support Markdown tasks (`- [ ]`), FIXME/TASK keywords, and case insensitivity. Added deduplication.
+- **Testing**: Updated `test_extract.py` with complex Markdown and keyword examples.
+- **Manual Review Findings**:
+    - Discovered that premature `lstrip("- ")` in the service was breaking the regex for Markdown bullets.
+    - Result format changed from returning the full line to just the content, which might be a breaking change for some UI consumers.
+- **Graphite AI Review Comparison**: (To be filled by user)
 
-## Task 1: Add more endpoints and validations
-a. Links to relevant commits/issues
-> TODO
+### PR 3: Task 3 - New Model and Relationships
+- **Description**: Introduced a `Tag` model and a many-to-many relationship with `Note`. Updated API to support tagging during creation and via a dedicated endpoint.
+- **Testing**: Added `test_note_tags` to verify tag creation, association, and deduplication.
+- **Manual Review Findings**:
+    - Identified a potential mutable default argument issue in `schemas.py` (`tags: list[str] = []`), which was corrected to `default_factory=list`.
+    - Potential N+1 query issue if tags are listed for many notes without `joinedload`.
+- **Graphite AI Review Comparison**: (To be filled by user)
 
-b. PR Description
-> TODO
+### PR 4: Task 4 - Pagination and Sorting Tests
+- **Description**: Added a dedicated test suite for pagination and sorting logic to ensure stability across edge cases.
+- **Testing**: New file `tests/test_pagination_sorting.py` with 20-note batch testing.
+- **Manual Review Findings**:
+    - Identified that timestamp precision might cause flakiness if multiple notes are created within the same millisecond, though currently mitigated by ID ordering in SQLite.
+- **Graphite AI Review Comparison**: (To be filled by user)
 
-c. Graphite Diamond generated code review
-> TODO
+## Reflection
 
-## Task 2: Extend extraction logic
-a. Links to relevant commits/issues
-> TODO
+### Manual Review Focus
+In my manual reviews, I focused on:
+- **Correctness/Consistency**: Matching database constraints with Pydantic schemas.
+- **Edge Cases**: Empty titles, extremely long strings, and concurrent tag creation.
+- **Best Practices**: Avoiding mutable defaults and ensuring idempotency (where applicable).
 
-b. PR Description
-> TODO
+### Human vs. AI (Graphite) Comparison
+(To be completed after Graphite Review)
 
-c. Graphite Diamond generated code review
-> TODO
-
-## Task 3: Try adding a new model and relationships
-a. Links to relevant commits/issues
-> TODO
-
-b. PR Description
-> TODO
-
-c. Graphite Diamond generated code review
-> TODO
-
-## Task 4: Improve tests for pagination and sorting
-a. Links to relevant commits/issues
-> TODO
-
-b. PR Description
-> TODO
-
-c. Graphite Diamond generated code review
-> TODO
-
-## Brief Reflection 
-a. The types of comments you typically made in your manual reviews (e.g., correctness, performance, security, naming, test gaps, API shape, UX, docs).
-> TODO 
-
-b. A comparison of **your** comments vs. **Graphite’s** AI-generated comments for each PR.
-> TODO
-
-c. When the AI reviews were better/worse than yours (cite specific examples)
-> TODO
-
-d. Your comfort level trusting AI reviews going forward and any heuristics for when to rely on them.
->TODO 
-
-
-
+### Trusting AI Reviews
+(To be completed after Graphite Review)
