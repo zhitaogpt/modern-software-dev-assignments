@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "rewrites": [
+    { "source": "/notes/(.*)", "destination": "backend/app/main.py" },
+    { "source": "/action-items/(.*)", "destination": "backend/app/main.py" },
+    { "source": "/(.*)", "destination": "/frontend-react/dist/$1" }
+  ]
+}
